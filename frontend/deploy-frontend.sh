@@ -27,7 +27,7 @@ echo "🚀 Starting frontend deployment..."
 # =============================================================================
 
 # PROMENI OVE VREDNOSTI!
-S3_BUCKET="freelance-frontend-YOUR-NAME"  # Tvoj S3 bucket
+S3_BUCKET="freelance-frontend-goran-bucket"  # Tvoj S3 bucket
 CLOUDFRONT_DISTRIBUTION_ID=""              # Tvoj CloudFront ID (opciono)
 AWS_REGION="eu-central-1"
 
