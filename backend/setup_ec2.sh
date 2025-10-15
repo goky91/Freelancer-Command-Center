@@ -208,7 +208,7 @@ server {
 
     # Static files (CSS, JS, images)
     location /static/ {
-        alias /home/ubuntu/freelance-command-center/backend/staticfiles/;
+        alias /home/ubuntu/Freelancer-Command-Center/backend/staticfiles/;
         expires 30d;
         add_header Cache-Control "public, immutable";
     }
@@ -216,13 +216,13 @@ server {
     # Media files (upload-ovani fajlovi)
     # U production-u, ovo ide na S3, ali za testing možemo ovako
     location /media/ {
-        alias /home/ubuntu/freelance-command-center/backend/media/;
+        alias /home/ubuntu/Freelancer-Command-Center/backend/media/;
         expires 7d;
     }
 
     # Proxy sve ostale request-e ka Gunicorn-u
     location / {
-        proxy_pass http://unix:/home/ubuntu/freelance-command-center/backend/gunicorn.sock;
+        proxy_pass http://unix:/home/ubuntu/Freelancer-Command-Center/backend/gunicorn.sock:;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
