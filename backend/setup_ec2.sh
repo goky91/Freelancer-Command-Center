@@ -50,22 +50,22 @@ sudo apt install -y \
     supervisor
 
 # =============================================================================
-# KREIRANJE PROJEKTA FOLDER-A
+# PROJEKAT FOLDER
 # =============================================================================
-echo "📁 Setting up project directory..."
+echo "📁 Checking project directory..."
 
-PROJECT_DIR="/home/ubuntu/freelance-command-center"
+PROJECT_DIR="/home/ubuntu/Freelancer-Command-Center"
 BACKEND_DIR="$PROJECT_DIR/backend"
 
-# Kloniraj repo (zameni sa svojim Git URL-om!)
+# Proveri da li postoji projekat (trebalo bi da je već kloniran ručno)
 if [ ! -d "$PROJECT_DIR" ]; then
-    echo "Cloning repository..."
-    read -p "Enter your Git repository URL: " GIT_REPO_URL
-    git clone $GIT_REPO_URL $PROJECT_DIR
-else
-    echo "Project directory already exists, skipping clone."
+    echo "❌ ERROR: Project directory not found!"
+    echo "Please clone the repository first:"
+    echo "  git clone https://github.com/YOUR-USERNAME/Freelancer-Command-Center.git"
+    exit 1
 fi
 
+echo "✅ Project directory found: $PROJECT_DIR"
 cd $BACKEND_DIR
 
 # =============================================================================
@@ -133,9 +133,9 @@ python manage.py migrate
 # Collect static files
 python manage.py collectstatic --noinput
 
-# Kreiranje superuser-a
-echo "Creating Django superuser..."
-python manage.py createsuperuser --noinput --email admin@example.com || echo "Superuser already exists"
+# Superuser će biti kreiran ručno nakon setup-a
+echo "⚠️  NOTE: You will need to create a Django superuser manually after setup"
+echo "    This is required to access the Django admin panel at /admin"
 
 # =============================================================================
 # GUNICORN SYSTEMD SERVICE
@@ -275,7 +275,7 @@ sudo ufw --force enable
 echo ""
 echo "╔═══════════════════════════════════════════════════════╗"
 echo "║                                                       ║"
-echo "║         ✅ EC2 SETUP COMPLETE! 🎉                    ║"
+echo "║         ✅ EC2 SETUP COMPLETE! 🎉                     ║"
 echo "║                                                       ║"
 echo "╚═══════════════════════════════════════════════════════╝"
 echo ""
