@@ -87,8 +87,7 @@ echo -e "${BLUE}☁️  Uploading to S3...${NC}"
 
 aws s3 sync build/ s3://$S3_BUCKET/ \
     --region $AWS_REGION \
-    --delete \
-    --acl public-read
+    --delete
 
 # Postavljanje cache headers za razlicite tipove fajlova
 echo -e "${BLUE}🔧 Setting cache headers...${NC}"
@@ -96,7 +95,6 @@ echo -e "${BLUE}🔧 Setting cache headers...${NC}"
 # HTML fajlovi - NE keširaj (uvek uzmi najnoviju verziju)
 aws s3 cp build/index.html s3://$S3_BUCKET/index.html \
     --region $AWS_REGION \
-    --acl public-read \
     --cache-control "no-cache, no-store, must-revalidate" \
     --metadata-directive REPLACE
 
@@ -105,7 +103,6 @@ aws s3 cp build/index.html s3://$S3_BUCKET/index.html \
 aws s3 cp build/static/ s3://$S3_BUCKET/static/ \
     --region $AWS_REGION \
     --recursive \
-    --acl public-read \
     --cache-control "max-age=31536000, immutable" \
     --metadata-directive REPLACE
 
