@@ -10,6 +10,7 @@ import TimeEntries from './components/TimeEntries';
 import Invoices from './components/Invoices';
 import { authAPI } from './api';
 import { User } from './types';
+//change test
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
