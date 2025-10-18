@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { AuthTokens, User, Client, TimeEntry, Invoice } from './types';
 
-const API_URL = 'http://18.184.247.135/api';
+const API_URL = 'http://3.67.201.188/api';
 
 const api = axios.create({
   baseURL: API_URL,
