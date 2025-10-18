@@ -1,0 +1,97 @@
+name: Backend Pipeline (CI + CD)
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-pipeline.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+jobs:
+  ci:
+    name: Backend CI - Test & Check
+    runs-on: ubuntu-latest
+
+    env:
+      DJANGO_SETTINGS_MODULE: config.settings
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-aws.txt
+
+      - name: Check Django setup
+        working-directory: ./backend
+        run: |
+          python manage.py check
+
+      - name: Check migrations
+        working-directory: ./backend
+        run: |
+          python manage.py makemigrations --check --dry-run
+        continue-on-error: true
+
+      - name: Run tests
+        working-directory: ./backend
+        run: |
+          python manage.py test
+        continue-on-error: true
+
+  cd:
+    name: Backend CD - Deploy to EC2
+    needs: ci
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout kod
+        uses: actions/checkout@v3
+
+      - name: Deploy na EC2 preko SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd ~/freelance-command-center
+
+            git pull origin main
+
+            cd backend
+            source venv/bin/activate
+
+            pip install -r requirements-aws.txt
+
+            export DJANGO_SETTINGS_MODULE=config.settings_production
+            python manage.py migrate --noinput
+
+            python manage.py collectstatic --noinput
+
+            sudo systemctl restart gunicorn
+            sudo systemctl restart nginx
+
+            echo "✅ Backend deployment completed!"
