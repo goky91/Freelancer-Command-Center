@@ -46,3 +46,13 @@ frontend/build/
 # AWS
 *.pem
 *.key
+
+# Documentation - Keep locally only, exclude from remote
+AWS-*.md
+learning.md
+POKRETANJE.md
+README-AWS.md
+START-HERE.md
+TODO.md
+CI-CD-GUIDE.md
+test-*.md
