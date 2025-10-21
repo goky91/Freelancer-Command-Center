@@ -355,19 +355,158 @@ const [clients, timeEntries, invoices] = await Promise.all([
 
 ---
 
-## 📋 Preostale Lekcije
+### Lekcija 8: Conditional Rendering i Liste ✅
 
-### Lekcija 8: Conditional Rendering i Liste (SLEDEĆA)
-**Teme za učenje:**
-- Conditional rendering (`&&`, ternary operator)
-- Liste i `map()` funkcija
-- `key` prop i zašto je važan
-- Filter i sort podataka
-- Prikazivanje praznih stanja
+**Osnovni koncepti:**
+- **Conditional Rendering:** Prikazivanje komponenti zavisno od uslova
+- **Liste:** Renderovanje nizova podataka sa `map()`
 
-**Fajlovi za analizu:**
+#### **A) Conditional Rendering - Načini:**
+
+**1. Ternary Operator (? :) - Najčešći:**
+```tsx
+{clients.length === 0 ? (
+  <p>No clients. Add your first client!</p>
+) : (
+  <Table>
+    {/* Lista klijenata */}
+  </Table>
+)}
+```
+
+**2. Logical AND (&&) - Prikaži ili ništa:**
+```tsx
+{isAuthenticated && <Navigation user={user} />}
+{error && <Alert variant="danger">{error}</Alert>}
+```
+
+**OPREZ:**
+```tsx
+// ❌ Može prikazati 0
+{clients.length && <ClientsList />}
+
+// ✅ Ispravno
+{clients.length > 0 && <ClientsList />}
+```
+
+**3. Early Return:**
+```tsx
+if (loading) return <Spinner />;
+if (error) return <Error />;
+return <Data />;
+```
+
+**4. Fallback vrednosti:**
+```tsx
+{client.company || '-'}
+{user?.name || 'Guest'}
+```
+
+#### **B) Liste - map() funkcija:**
+
+```tsx
+{clients.map((client) => (
+  <tr key={client.id}>  {/* key je OBAVEZAN! */}
+    <td>{client.name}</td>
+    <td>{client.company || '-'}</td>
+    <td>
+      <Button onClick={() => handleEdit(client)}>Edit</Button>
+      <Button onClick={() => handleDelete(client.id)}>Delete</Button>
+    </td>
+  </tr>
+))}
+```
+
+#### **C) key prop - VEOMA VAŽNO! 🔑**
+
+```tsx
+// ✅ DOBRO - Koristi unique ID
+{clients.map(client => (
+  <tr key={client.id}>
+    <td>{client.name}</td>
+  </tr>
+))}
+
+// ❌ LOŠE - Index može praviti bugove
+{clients.map((client, index) => (
+  <tr key={index}>  {/* ❌ Loša praksa */}
+    <td>{client.name}</td>
+  </tr>
+))}
+```
+
+**Zašto je key važan?**
+- React koristi `key` da identifikuje koji elementi su se promenili
+- Omogućava efikasan re-render
+- Bez key-a ili sa index-om može doći do bugova pri dodavanju/brisanju
+
+#### **D) Filter + Map pattern:**
+
+```tsx
+const filteredClients = clients.filter(client =>
+  client.name.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+{filteredClients.length === 0 ? (
+  <p>No clients found for "{searchTerm}"</p>
+) : (
+  filteredClients.map(client => (
+    <ClientCard key={client.id} client={client} />
+  ))
+)}
+```
+
+#### **E) Sort + Map pattern:**
+
+```tsx
+const sortedClients = [...clients].sort((a, b) =>
+  a.name > b.name ? 1 : -1
+);
+
+{sortedClients.map(client => (
+  <div key={client.id}>{client.name}</div>
+))}
+```
+
+#### **F) Nested lists:**
+
+```tsx
+{categories.map(category => (
+  <div key={category.id}>
+    <h3>{category.name}</h3>
+    <ul>
+      {category.items.map(item => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  </div>
+))}
+```
+
+#### **G) Conditional styling u listama:**
+
+```tsx
+{invoices.map(invoice => (
+  <tr
+    key={invoice.id}
+    className={invoice.status === 'overdue' ? 'table-danger' : ''}
+  >
+    <td>{invoice.number}</td>
+  </tr>
+))}
+```
+
+**Kod za pregled:**
 - [frontend/src/components/Clients.tsx:119-160](frontend/src/components/Clients.tsx#L119-L160)
-- [frontend/src/components/Dashboard.tsx:54-91](frontend/src/components/Dashboard.tsx#L54-L91)
+- [frontend/src/components/Dashboard.tsx:44-52](frontend/src/components/Dashboard.tsx#L44-L52)
+
+---
+
+## 📋 Završene su SVE osnovne lekcije! 🎉
+
+**Status:** 8/8 osnovnih lekcija završeno (100%)
+
+**Sledeće:** Bonus lekcije - Napredni React koncepti
 
 ---
 
@@ -425,10 +564,10 @@ const handleSubmit = async () => {
 ---
 
 **Datum kreiranja:** 2025-10-20
-**Poslednje ažuriranje:** Pauzirano na Lekciji 7 (Axios i API pozivi)
-**Status:** 7/8 lekcija završeno (87.5%)
+**Poslednje ažuriranje:** 2025-10-21 - Završene SVE osnovne lekcije! 🎉
+**Status:** 8/8 osnovnih lekcija završeno (100%)
 
-**Sledeći put:** Nastavi sa Lekcijom 8 - Conditional Rendering i Liste
+**Sledeće:** Bonus Lekcija 1 - Context API (Globalni State)
 
 ---
 
